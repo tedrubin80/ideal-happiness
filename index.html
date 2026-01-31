@@ -302,7 +302,7 @@ Repeat rows 1-2 for pattern"></textarea>
                     'decrease': 'dec',
                     'increase': 'inc',
                     'cast on': 'CO',
-                    'cast off': 'CO',
+                    'cast off': 'BO',
                     'bind off': 'BO',
                     'cable': 'C',
                     'slip slip knit': 'ssk',
@@ -318,9 +318,9 @@ Repeat rows 1-2 for pattern"></textarea>
                 const lines = patternText.split('\n');
                 const convertedLines = [];
                 
-                convertedLines.push('=' .repeat(60));
+                convertedLines.push('='.repeat(60));
                 convertedLines.push('STANDARDIZED KNITTING PATTERN');
-                convertedLines.push('=' .repeat(60));
+                convertedLines.push('='.repeat(60));
                 convertedLines.push('');
                 
                 let inInstructions = false;
@@ -350,18 +350,18 @@ Repeat rows 1-2 for pattern"></textarea>
                 }
 
                 convertedLines.push('');
-                convertedLines.push('=' .repeat(60));
+                convertedLines.push('='.repeat(60));
                 convertedLines.push('ABBREVIATIONS USED:');
-                convertedLines.push('-' .repeat(60));
+                convertedLines.push('-'.repeat(60));
                 
                 const usedAbbrevs = this.getUsedAbbreviations(patternText);
                 for (const [full, abbrev] of Object.entries(usedAbbrevs)) {
                     convertedLines.push(`${abbrev} = ${full}`);
                 }
                 
-                convertedLines.push('=' .repeat(60));
+                convertedLines.push('='.repeat(60));
                 convertedLines.push(`Converted on: ${new Date().toLocaleDateString()}`);
-                convertedLines.push('=' .repeat(60));
+                convertedLines.push('='.repeat(60));
 
                 return convertedLines.join('\n');
             }
