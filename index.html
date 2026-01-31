@@ -473,11 +473,24 @@ Repeat rows 1-2 for pattern"></textarea>
             }
 
             readFile(file) {
+                // Validate file size (max 5MB to prevent DoS)
+                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                if (file.size > MAX_FILE_SIZE) {
+                    alert('File is too large. Maximum file size is 5MB.');
+                    return;
+                }
+                
                 const reader = new FileReader();
                 
                 reader.onload = (e) => {
                     this.patternInput.value = e.target.result;
-                    this.fileInfo.innerHTML = `<strong>Loaded:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                    // Safely display file info without XSS vulnerability
+                    this.fileInfo.innerHTML = '';
+                    const strong = document.createElement('strong');
+                    strong.textContent = 'Loaded: ';
+                    const fileText = document.createTextNode(`${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+                    this.fileInfo.appendChild(strong);
+                    this.fileInfo.appendChild(fileText);
                     this.fileInfo.classList.add('active');
                 };
                 
