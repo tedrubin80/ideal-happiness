@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knitting Pattern Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .upload-section.dragover {
+            background: #e8eaff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .file-input-wrapper {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #28a745;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-right: 15px;
+            border-radius: 3px;
+        }
+
+        .output-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .output-section.active {
+            display: block;
+        }
+
+        .preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            border: 2px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧶 Knitting Pattern Converter</h1>
+            <p>Convert text-based patterns to standardized knitting patterns</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <h3>How it works:</h3>
+                <p>Upload or paste your text-based knitting pattern, and we'll convert it to a clean, standardized format with proper abbreviations and formatting. Perfect for patterns from Etsy or other text-based sources!</p>
+            </div>
+
+            <div class="upload-section" id="uploadSection">
+                <h2 style="margin-bottom: 20px;">Upload Pattern File</h2>
+                <p style="margin-bottom: 20px; color: #666;">Drag and drop a file here or click to browse</p>
+                <div class="file-input-wrapper">
+                    <button class="btn">Choose File</button>
+                    <input type="file" id="fileInput" accept=".txt,.text">
+                </div>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+
+            <div class="section-title">Or Paste Your Pattern</div>
+            <textarea id="patternInput" placeholder="Paste your pattern text here...
+
+Example:
+Row 1: Knit 5, Purl 3, Knit 5
+Row 2: Purl 5, Knit 3, Purl 5
+Repeat rows 1-2 for pattern"></textarea>
+
+            <div class="button-group">
+                <button class="btn" id="convertBtn">Convert Pattern</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px;">Converting pattern...</p>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="section-title">Converted Pattern</div>
+                <div class="preview" id="preview"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" id="downloadBtn">Download Pattern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pattern conversion logic
+        class KnittingPatternConverter {
+            constructor() {
+                this.abbreviations = {
+                    'knit': 'k',
+                    'purl': 'p',
+                    'yarn over': 'yo',
+                    'slip': 'sl',
+                    'stitch': 'st',
+                    'stitches': 'sts',
+                    'together': 'tog',
+                    'through back loop': 'tbl',
+                    'right side': 'RS',
+                    'wrong side': 'WS',
+                    'repeat': 'rep',
+                    'beginning': 'beg',
+                    'decrease': 'dec',
+                    'increase': 'inc',
+                    'cast on': 'CO',
+                    'cast off': 'BO',
+                    'bind off': 'BO',
+                    'cable': 'C',
+                    'slip slip knit': 'ssk',
+                    'make one': 'm1'
+                };
+            }
+
+            convert(patternText) {
+                if (!patternText || patternText.trim().length === 0) {
+                    throw new Error('Pattern text is empty');
+                }
+
+                const lines = patternText.split('\n');
+                const convertedLines = [];
+                
+                convertedLines.push('='.repeat(60));
+                convertedLines.push('STANDARDIZED KNITTING PATTERN');
+                convertedLines.push('='.repeat(60));
+                convertedLines.push('');
+                
+                let inInstructions = false;
+                let rowNumber = 0;
+
+                for (let line of lines) {
+                    line = line.trim();
+                    
+                    if (line.length === 0) {
+                        convertedLines.push('');
+                        continue;
+                    }
+
+                    // Check if this is a row instruction
+                    if (this.isRowInstruction(line)) {
+                        inInstructions = true;
+                        rowNumber++;
+                        const converted = this.convertRow(line, rowNumber);
+                        convertedLines.push(converted);
+                    } else if (inInstructions) {
+                        // Continue with pattern details
+                        convertedLines.push(line);
+                    } else {
+                        // Header or description lines
+                        convertedLines.push(line);
+                    }
+                }
+
+                convertedLines.push('');
+                convertedLines.push('='.repeat(60));
+                convertedLines.push('ABBREVIATIONS USED:');
+                convertedLines.push('-'.repeat(60));
+                
+                const usedAbbrevs = this.getUsedAbbreviations(patternText);
+                for (const [full, abbrev] of Object.entries(usedAbbrevs)) {
+                    convertedLines.push(`${abbrev} = ${full}`);
+                }
+                
+                convertedLines.push('='.repeat(60));
+                convertedLines.push(`Converted on: ${new Date().toLocaleDateString()}`);
+                convertedLines.push('='.repeat(60));
+
+                return convertedLines.join('\n');
+            }
+
+            isRowInstruction(line) {
+                const rowPatterns = [
+                    /^row\s+\d+/i,
+                    /^r\d+/i,
+                    /^\d+\./,
+                    /^round\s+\d+/i
+                ];
+                
+                return rowPatterns.some(pattern => pattern.test(line));
+            }
+
+            convertRow(line, rowNum) {
+                let converted = line;
+                
+                // Apply abbreviations
+                for (const [full, abbrev] of Object.entries(this.abbreviations)) {
+                    const regex = new RegExp('\\b' + full + '\\b', 'gi');
+                    converted = converted.replace(regex, abbrev);
+                }
+
+                // Standardize row format
+                converted = converted.replace(/^row\s+\d+:?\s*/i, `Row ${rowNum}: `);
+                converted = converted.replace(/^r\d+:?\s*/i, `Row ${rowNum}: `);
+                converted = converted.replace(/^\d+\.\s*/, `Row ${rowNum}: `);
+
+                return converted;
+            }
+
+            getUsedAbbreviations(text) {
+                const used = {};
+                const lowerText = text.toLowerCase();
+                
+                for (const [full, abbrev] of Object.entries(this.abbreviations)) {
+                    if (lowerText.includes(full.toLowerCase())) {
+                        used[full] = abbrev;
+                    }
+                }
+                
+                return used;
+            }
+
+            generateFileName() {
+                const date = new Date();
+                const timestamp = date.toISOString().split('T')[0];
+                return `knitting_pattern_${timestamp}.txt`;
+            }
+        }
+
+        // UI Controller
+        class UIController {
+            constructor() {
+                this.converter = new KnittingPatternConverter();
+                this.currentPattern = null;
+                this.initializeElements();
+                this.attachEventListeners();
+            }
+
+            initializeElements() {
+                this.fileInput = document.getElementById('fileInput');
+                this.patternInput = document.getElementById('patternInput');
+                this.convertBtn = document.getElementById('convertBtn');
+                this.downloadBtn = document.getElementById('downloadBtn');
+                this.uploadSection = document.getElementById('uploadSection');
+                this.outputSection = document.getElementById('outputSection');
+                this.preview = document.getElementById('preview');
+                this.loading = document.getElementById('loading');
+                this.fileInfo = document.getElementById('fileInfo');
+            }
+
+            attachEventListeners() {
+                // File input
+                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                // Convert button
+                this.convertBtn.addEventListener('click', () => this.convertPattern());
+                
+                // Download button
+                this.downloadBtn.addEventListener('click', () => this.downloadPattern());
+                
+                // Drag and drop
+                this.uploadSection.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadSection.classList.add('dragover');
+                });
+                
+                this.uploadSection.addEventListener('dragleave', () => {
+                    this.uploadSection.classList.remove('dragover');
+                });
+                
+                this.uploadSection.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadSection.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.readFile(files[0]);
+                    }
+                });
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.readFile(file);
+                }
+            }
+
+            readFile(file) {
+                // Validate file size (max 5MB to prevent DoS)
+                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                if (file.size > MAX_FILE_SIZE) {
+                    alert('File is too large. Maximum file size is 5MB.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    this.patternInput.value = e.target.result;
+                    // Safely display file info without XSS vulnerability
+                    this.fileInfo.innerHTML = '';
+                    const strong = document.createElement('strong');
+                    strong.textContent = 'Loaded: ';
+                    const fileText = document.createTextNode(`${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+                    this.fileInfo.appendChild(strong);
+                    this.fileInfo.appendChild(fileText);
+                    this.fileInfo.classList.add('active');
+                };
+                
+                reader.onerror = () => {
+                    alert('Error reading file. Please try again.');
+                };
+                
+                reader.readAsText(file);
+            }
+
+            async convertPattern() {
+                const patternText = this.patternInput.value;
+                
+                if (!patternText || patternText.trim().length === 0) {
+                    alert('Please upload a file or paste pattern text first.');
+                    return;
+                }
+
+                // Show loading
+                this.loading.classList.add('active');
+                this.convertBtn.disabled = true;
+                this.outputSection.classList.remove('active');
+
+                // Simulate processing time for better UX
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                try {
+                    this.currentPattern = this.converter.convert(patternText);
+                    this.preview.textContent = this.currentPattern;
+                    this.outputSection.classList.add('active');
+                    
+                    // Scroll to output
+                    this.outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch (error) {
+                    alert('Error converting pattern: ' + error.message);
+                } finally {
+                    this.loading.classList.remove('active');
+                    this.convertBtn.disabled = false;
+                }
+            }
+
+            downloadPattern() {
+                if (!this.currentPattern) {
+                    alert('No pattern to download. Please convert a pattern first.');
+                    return;
+                }
+
+                const blob = new Blob([this.currentPattern], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = this.converter.generateFileName();
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new UIController();
+        });
+    </script>
+</body>
+</html>
