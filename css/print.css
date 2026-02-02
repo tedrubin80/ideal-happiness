@@ -1,0 +1,75 @@
+/* Knitting Pattern Converter - Print Styles */
+
+@media print {
+    /* Hide UI elements */
+    header,
+    .skip-link,
+    .upload-section,
+    .info-box,
+    .btn,
+    .button-group,
+    .loading,
+    .file-info,
+    .panel,
+    .toast-container,
+    .mode-toggle,
+    textarea,
+    .section-title:not(.output-section .section-title) {
+        display: none !important;
+    }
+
+    /* Reset body styles */
+    body {
+        background: white !important;
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+
+    /* Reset container */
+    .container {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        max-width: none !important;
+    }
+
+    .content {
+        padding: 20px !important;
+    }
+
+    /* Show output section */
+    .output-section {
+        display: block !important;
+        margin-top: 0 !important;
+    }
+
+    .output-section .section-title {
+        font-size: 1.2em !important;
+        margin-bottom: 10px !important;
+    }
+
+    .output-section .section-title::before {
+        display: none !important;
+    }
+
+    /* Preview/output area */
+    .preview {
+        border: none !important;
+        padding: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Page breaks */
+    .preview {
+        page-break-inside: auto;
+    }
+
+    /* Ensure text is black */
+    * {
+        color: black !important;
+    }
+}

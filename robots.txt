@@ -1,0 +1,9 @@
+# robots.txt for wooleryapp.com
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://wooleryapp.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

@@ -3,557 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knitting Pattern Converter</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+    <!-- Primary Meta Tags -->
+    <title>Knitting Pattern Converter | Abbreviate & Expand Patterns - Woolery App</title>
+    <meta name="title" content="Knitting Pattern Converter | Abbreviate & Expand Patterns - Woolery App">
+    <meta name="description" content="Free online tool to convert knitting and crochet patterns. Instantly abbreviate full words to standard notation (knit to k, purl to p) or expand abbreviations back to full words. Supports PDF pattern extraction with AI.">
+    <meta name="keywords" content="knitting pattern converter, crochet pattern converter, knitting abbreviations, pattern abbreviator, expand knitting abbreviations, k2tog, ssk, yarn over, knitting tools, crochet tools, PDF pattern reader, Woolery">
+    <meta name="author" content="Woolery App">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://wooleryapp.com/">
 
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wooleryapp.com/">
+    <meta property="og:title" content="Knitting Pattern Converter | Abbreviate & Expand Patterns">
+    <meta property="og:description" content="Free online tool to convert knitting and crochet patterns. Instantly abbreviate or expand pattern notation. Supports PDF extraction with AI.">
+    <meta property="og:image" content="https://wooleryapp.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Woolery App - Knitting Pattern Converter">
+    <meta property="og:site_name" content="Woolery App">
+    <meta property="og:locale" content="en_US">
 
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://wooleryapp.com/">
+    <meta name="twitter:title" content="Knitting Pattern Converter | Abbreviate & Expand Patterns">
+    <meta name="twitter:description" content="Free online tool to convert knitting and crochet patterns. Instantly abbreviate or expand pattern notation. Supports PDF extraction with AI.">
+    <meta name="twitter:image" content="https://wooleryapp.com/images/twitter-card.png">
+    <meta name="twitter:image:alt" content="Woolery App - Knitting Pattern Converter">
 
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
+    <!-- Theme and Mobile -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Woolery App">
 
-        .content {
-            padding: 40px;
-        }
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
-        .upload-section {
-            border: 3px dashed #667eea;
-            border-radius: 10px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 30px;
-            background: #f8f9ff;
-            transition: all 0.3s ease;
+    <!-- Structured Data - WebApplication -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Knitting Pattern Converter",
+        "alternateName": "Woolery App Pattern Converter",
+        "url": "https://wooleryapp.com/",
+        "description": "Free online tool to convert knitting and crochet patterns between full words and standard abbreviations. Features AI-powered PDF pattern extraction.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Convert full words to knitting abbreviations",
+            "Expand abbreviations to full words",
+            "Custom abbreviation support",
+            "PDF pattern extraction with AI",
+            "Download converted patterns",
+            "Print-friendly output",
+            "Conversion history"
+        ],
+        "screenshot": "https://wooleryapp.com/images/screenshot.png",
+        "softwareVersion": "1.0",
+        "author": {
+            "@type": "Organization",
+            "name": "Woolery App"
         }
+    }
+    </script>
 
-        .upload-section:hover {
-            border-color: #764ba2;
-            background: #f0f2ff;
+    <!-- Structured Data - HowTo -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Convert Knitting Patterns",
+        "description": "Learn how to convert knitting patterns between full words and standard abbreviations using the Woolery App Pattern Converter.",
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "Upload or paste your pattern",
+                "text": "Upload a text file or PDF, or paste your knitting pattern directly into the text area."
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Choose conversion mode",
+                "text": "Click 'Abbreviate Pattern' to convert full words to abbreviations, or 'Expand to Full Words' to convert abbreviations to full text."
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Download or copy your converted pattern",
+                "text": "Download the converted pattern as a text file, copy it to your clipboard, or print it directly."
+            }
+        ],
+        "tool": {
+            "@type": "HowToTool",
+            "name": "Woolery App Pattern Converter"
         }
+    }
+    </script>
 
-        .upload-section.dragover {
-            background: #e8eaff;
-            border-color: #764ba2;
-            transform: scale(1.02);
-        }
+    <!-- Structured Data - FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What knitting abbreviations does the converter support?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The converter supports all standard knitting abbreviations including k (knit), p (purl), k2tog (knit 2 together), ssk (slip slip knit), yo (yarn over), CO (cast on), BO (bind off), and many more. You can also add custom abbreviations."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I convert PDF knitting patterns?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! The converter supports PDF pattern extraction using AI-powered vision models through Ollama. This feature can read designer PDFs and scanned patterns."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is the knitting pattern converter free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, the Woolery App Pattern Converter is completely free to use with no account required."
+                }
+            }
+        ]
+    }
+    </script>
 
-        .file-input-wrapper {
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-        }
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
 
-        .file-input-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #28a745;
-            margin-left: 10px;
-        }
-
-        .btn-secondary:hover {
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            resize: vertical;
-            margin-bottom: 20px;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            color: #333;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 5px;
-            height: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin-right: 15px;
-            border-radius: 3px;
-        }
-
-        .output-section {
-            margin-top: 30px;
-            display: none;
-        }
-
-        .output-section.active {
-            display: block;
-        }
-
-        .preview {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
-            border: 2px solid #ddd;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .info-box {
-            background: #e7f3ff;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .info-box h3 {
-            color: #2196F3;
-            margin-bottom: 10px;
-        }
-
-        .button-group {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .file-info {
-            margin-top: 15px;
-            padding: 10px;
-            background: white;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .file-info.active {
-            display: block;
-        }
-
-        .file-info strong {
-            color: #667eea;
-        }
-    </style>
+    <!-- PDF.js for PDF processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";</script>
 </head>
 <body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container">
         <header>
-            <h1>🧶 Knitting Pattern Converter</h1>
+            <h1>Knitting Pattern Converter</h1>
             <p>Convert text-based patterns to standardized knitting patterns</p>
         </header>
 
-        <div class="content">
-            <div class="info-box">
+        <main id="main-content" class="content">
+            <!-- Info box -->
+            <div class="info-box" role="region" aria-label="Instructions">
                 <h3>How it works:</h3>
-                <p>Upload or paste your text-based knitting pattern, and we'll convert it to a clean, standardized format with proper abbreviations and formatting. Perfect for patterns from Etsy or other text-based sources!</p>
+                <p>Upload or paste your text-based knitting pattern, and we'll convert it to a clean, standardized format with proper abbreviations. Use <strong>Abbreviate</strong> to shorten full words, or <strong>Expand</strong> to convert abbreviations back to full words.</p>
+                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <strong>Keyboard shortcuts:</strong> Ctrl+Enter to abbreviate, Ctrl+S to download
+                </p>
+                <p style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                    <strong>PDF Support:</strong> Upload PDF patterns for AI-powered text extraction (requires local Ollama)
+                </p>
             </div>
 
-            <div class="upload-section" id="uploadSection">
-                <h2 style="margin-bottom: 20px;">Upload Pattern File</h2>
-                <p style="margin-bottom: 20px; color: #666;">Drag and drop a file here or click to browse</p>
+            <!-- Ollama Status Banner -->
+            <div id="ollamaStatus" class="ollama-status" style="display: none;">
+                <span id="ollamaStatusIcon"></span>
+                <span id="ollamaStatusText"></span>
+                <button id="ollamaSettingsToggle" class="btn btn-small btn-outline" style="margin-left: auto;">Settings</button>
+            </div>
+
+            <!-- Upload section -->
+            <section class="upload-section" id="uploadSection" role="region" aria-label="File upload">
+                <h2>Upload Pattern File</h2>
+                <p>Drag and drop a file here or click to browse</p>
+                <p style="font-size: 0.85em; color: #666;">Supports: .txt, .text, .pdf (PDF requires Ollama)</p>
                 <div class="file-input-wrapper">
-                    <button class="btn">Choose File</button>
-                    <input type="file" id="fileInput" accept=".txt,.text">
+                    <button class="btn" type="button" aria-controls="fileInput">Choose File</button>
+                    <input type="file" id="fileInput" accept=".txt,.text,.pdf" aria-label="Upload pattern file">
                 </div>
-                <div class="file-info" id="fileInfo"></div>
-            </div>
+                <div class="file-info" id="fileInfo" aria-live="polite"></div>
+            </section>
 
-            <div class="section-title">Or Paste Your Pattern</div>
-            <textarea id="patternInput" placeholder="Paste your pattern text here...
+            <!-- Text input -->
+            <section aria-label="Pattern input">
+                <h2 class="section-title">Or Paste Your Pattern</h2>
+                <textarea id="patternInput"
+                          aria-label="Pattern text input"
+                          placeholder="Paste your pattern text here...
 
 Example:
+Cast on 30 stitches
 Row 1: Knit 5, Purl 3, Knit 5
 Row 2: Purl 5, Knit 3, Purl 5
-Repeat rows 1-2 for pattern"></textarea>
+Repeat rows 1-2 for pattern
+Bind off all stitches"></textarea>
+            </section>
 
-            <div class="button-group">
-                <button class="btn" id="convertBtn">Convert Pattern</button>
+            <!-- Action buttons -->
+            <div class="button-group" role="group" aria-label="Conversion actions">
+                <button class="btn" id="convertBtn" aria-describedby="convert-help">
+                    Abbreviate Pattern
+                </button>
+                <button class="btn btn-outline" id="expandBtn" aria-describedby="expand-help">
+                    Expand to Full Words
+                </button>
+            </div>
+            <span id="convert-help" class="sr-only">Converts full words to abbreviations (e.g., knit to k)</span>
+            <span id="expand-help" class="sr-only">Expands abbreviations to full words (e.g., k to knit)</span>
+
+            <!-- Loading indicator -->
+            <div class="loading" id="loading" role="status" aria-label="Converting pattern">
+                <div class="spinner" aria-hidden="true"></div>
+                <p id="loadingText">Converting pattern...</p>
             </div>
 
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p style="margin-top: 15px;">Converting pattern...</p>
-            </div>
-
-            <div class="output-section" id="outputSection">
-                <div class="section-title">Converted Pattern</div>
-                <div class="preview" id="preview"></div>
-                <div class="button-group">
-                    <button class="btn btn-secondary" id="downloadBtn">Download Pattern</button>
+            <!-- Output section -->
+            <section class="output-section" id="outputSection" aria-label="Converted pattern">
+                <h2 class="section-title">Converted Pattern</h2>
+                <div class="preview" id="preview" tabindex="0" role="region" aria-label="Pattern output"></div>
+                <div class="button-group" role="group" aria-label="Output actions">
+                    <button class="btn btn-secondary" id="downloadBtn" aria-label="Download converted pattern">
+                        Download
+                    </button>
+                    <button class="btn btn-secondary" id="copyBtn" aria-label="Copy pattern to clipboard">
+                        Copy to Clipboard
+                    </button>
+                    <button class="btn btn-secondary" id="printBtn" aria-label="Print pattern">
+                        Print
+                    </button>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- Ollama Settings Panel -->
+            <aside id="ollamaPanel" class="panel collapsed" aria-label="Ollama AI settings">
+                <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="ollamaContent">
+                    <h2>AI Pattern Extraction (Ollama)</h2>
+                    <span class="toggle-icon" aria-hidden="true">&#9660;</span>
+                </div>
+                <div class="panel-content" id="ollamaContent">
+                    <div class="ollama-settings">
+                        <div class="form-group">
+                            <label for="ollamaUrl">Ollama URL:</label>
+                            <input type="text" id="ollamaUrl" value="http://localhost:11434" placeholder="http://localhost:11434">
+                        </div>
+                        <div class="form-group">
+                            <label for="ollamaModel">Vision Model:</label>
+                            <select id="ollamaModel">
+                                <option value="llava:7b">llava:7b (recommended)</option>
+                                <option value="llava">llava</option>
+                                <option value="llava:13b">llava:13b</option>
+                                <option value="bakllava">bakllava</option>
+                                <option value="moondream">moondream</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-small" id="testOllamaBtn">Test Connection</button>
+                            <span id="ollamaTestResult" style="margin-left: 10px;"></span>
+                        </div>
+                        <div class="ollama-info">
+                            <h4>Setup Instructions:</h4>
+                            <ol>
+                                <li>Install Ollama: <code>curl -fsSL https://ollama.com/install.sh | sh</code></li>
+                                <li>Pull a vision model: <code>ollama pull llava:7b</code></li>
+                                <li>Start Ollama: <code>ollama serve</code></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Custom Abbreviations Panel -->
+            <aside id="customAbbrevPanel" class="panel" aria-label="Custom abbreviations">
+                <div class="panel-header" role="button" tabindex="0" aria-expanded="true" aria-controls="customAbbrevContent">
+                    <h2>Custom Abbreviations</h2>
+                    <span class="toggle-icon" aria-hidden="true">&#9660;</span>
+                </div>
+                <div class="panel-content" id="customAbbrevContent">
+                    <form id="customAbbrevForm" class="abbrev-form">
+                        <input type="text" id="customFull" placeholder="Full word (e.g., double knit)" required aria-label="Full word or phrase">
+                        <input type="text" id="customAbbrev" placeholder="Abbreviation (e.g., dk)" required aria-label="Abbreviation">
+                        <button type="submit" class="btn btn-small">Add</button>
+                    </form>
+                    <div id="customAbbrevList"></div>
+                    <div style="margin-top: 15px; text-align: right;">
+                        <button class="btn btn-small btn-danger" id="clearCustomBtn">Clear All</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- History Panel -->
+            <aside id="historyPanel" class="panel collapsed" aria-label="Conversion history">
+                <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="historyContent">
+                    <h2>Recent Conversions</h2>
+                    <span class="toggle-icon" aria-hidden="true">&#9660;</span>
+                </div>
+                <div class="panel-content" id="historyContent">
+                    <div id="historyList"></div>
+                    <div style="margin-top: 15px; text-align: right;">
+                        <button class="btn btn-small btn-danger" id="clearHistoryBtn">Clear History</button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer style="text-align: center; padding: 20px; color: #666; font-size: 0.85em;">
+            <p>Woolery App &copy; 2025 | <a href="/privacy" style="color: #667eea;">Privacy</a> | <a href="/terms" style="color: #667eea;">Terms</a></p>
+        </footer>
     </div>
 
-    <script>
-        // Pattern conversion logic
-        class KnittingPatternConverter {
-            constructor() {
-                this.abbreviations = {
-                    'knit': 'k',
-                    'purl': 'p',
-                    'yarn over': 'yo',
-                    'slip': 'sl',
-                    'stitch': 'st',
-                    'stitches': 'sts',
-                    'together': 'tog',
-                    'through back loop': 'tbl',
-                    'right side': 'RS',
-                    'wrong side': 'WS',
-                    'repeat': 'rep',
-                    'beginning': 'beg',
-                    'decrease': 'dec',
-                    'increase': 'inc',
-                    'cast on': 'CO',
-                    'cast off': 'BO',
-                    'bind off': 'BO',
-                    'cable': 'C',
-                    'slip slip knit': 'ssk',
-                    'make one': 'm1'
-                };
-            }
-
-            convert(patternText) {
-                if (!patternText || patternText.trim().length === 0) {
-                    throw new Error('Pattern text is empty');
-                }
-
-                const lines = patternText.split('\n');
-                const convertedLines = [];
-                
-                convertedLines.push('='.repeat(60));
-                convertedLines.push('STANDARDIZED KNITTING PATTERN');
-                convertedLines.push('='.repeat(60));
-                convertedLines.push('');
-                
-                let inInstructions = false;
-                let rowNumber = 0;
-
-                for (let line of lines) {
-                    line = line.trim();
-                    
-                    if (line.length === 0) {
-                        convertedLines.push('');
-                        continue;
-                    }
-
-                    // Check if this is a row instruction
-                    if (this.isRowInstruction(line)) {
-                        inInstructions = true;
-                        rowNumber++;
-                        const converted = this.convertRow(line, rowNumber);
-                        convertedLines.push(converted);
-                    } else if (inInstructions) {
-                        // Continue with pattern details
-                        convertedLines.push(line);
-                    } else {
-                        // Header or description lines
-                        convertedLines.push(line);
-                    }
-                }
-
-                convertedLines.push('');
-                convertedLines.push('='.repeat(60));
-                convertedLines.push('ABBREVIATIONS USED:');
-                convertedLines.push('-'.repeat(60));
-                
-                const usedAbbrevs = this.getUsedAbbreviations(patternText);
-                for (const [full, abbrev] of Object.entries(usedAbbrevs)) {
-                    convertedLines.push(`${abbrev} = ${full}`);
-                }
-                
-                convertedLines.push('='.repeat(60));
-                convertedLines.push(`Converted on: ${new Date().toLocaleDateString()}`);
-                convertedLines.push('='.repeat(60));
-
-                return convertedLines.join('\n');
-            }
-
-            isRowInstruction(line) {
-                const rowPatterns = [
-                    /^row\s+\d+/i,
-                    /^r\d+/i,
-                    /^\d+\./,
-                    /^round\s+\d+/i
-                ];
-                
-                return rowPatterns.some(pattern => pattern.test(line));
-            }
-
-            convertRow(line, rowNum) {
-                let converted = line;
-                
-                // Apply abbreviations
-                for (const [full, abbrev] of Object.entries(this.abbreviations)) {
-                    const regex = new RegExp('\\b' + full + '\\b', 'gi');
-                    converted = converted.replace(regex, abbrev);
-                }
-
-                // Standardize row format
-                converted = converted.replace(/^row\s+\d+:?\s*/i, `Row ${rowNum}: `);
-                converted = converted.replace(/^r\d+:?\s*/i, `Row ${rowNum}: `);
-                converted = converted.replace(/^\d+\.\s*/, `Row ${rowNum}: `);
-
-                return converted;
-            }
-
-            getUsedAbbreviations(text) {
-                const used = {};
-                const lowerText = text.toLowerCase();
-                
-                for (const [full, abbrev] of Object.entries(this.abbreviations)) {
-                    if (lowerText.includes(full.toLowerCase())) {
-                        used[full] = abbrev;
-                    }
-                }
-                
-                return used;
-            }
-
-            generateFileName() {
-                const date = new Date();
-                const timestamp = date.toISOString().split('T')[0];
-                return `knitting_pattern_${timestamp}.txt`;
-            }
-        }
-
-        // UI Controller
-        class UIController {
-            constructor() {
-                this.converter = new KnittingPatternConverter();
-                this.currentPattern = null;
-                this.initializeElements();
-                this.attachEventListeners();
-            }
-
-            initializeElements() {
-                this.fileInput = document.getElementById('fileInput');
-                this.patternInput = document.getElementById('patternInput');
-                this.convertBtn = document.getElementById('convertBtn');
-                this.downloadBtn = document.getElementById('downloadBtn');
-                this.uploadSection = document.getElementById('uploadSection');
-                this.outputSection = document.getElementById('outputSection');
-                this.preview = document.getElementById('preview');
-                this.loading = document.getElementById('loading');
-                this.fileInfo = document.getElementById('fileInfo');
-            }
-
-            attachEventListeners() {
-                // File input
-                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-                
-                // Convert button
-                this.convertBtn.addEventListener('click', () => this.convertPattern());
-                
-                // Download button
-                this.downloadBtn.addEventListener('click', () => this.downloadPattern());
-                
-                // Drag and drop
-                this.uploadSection.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    this.uploadSection.classList.add('dragover');
-                });
-                
-                this.uploadSection.addEventListener('dragleave', () => {
-                    this.uploadSection.classList.remove('dragover');
-                });
-                
-                this.uploadSection.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    this.uploadSection.classList.remove('dragover');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.readFile(files[0]);
-                    }
-                });
-            }
-
-            handleFileSelect(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    this.readFile(file);
-                }
-            }
-
-            readFile(file) {
-                // Validate file size (max 5MB to prevent DoS)
-                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-                if (file.size > MAX_FILE_SIZE) {
-                    alert('File is too large. Maximum file size is 5MB.');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                
-                reader.onload = (e) => {
-                    this.patternInput.value = e.target.result;
-                    // Safely display file info without XSS vulnerability
-                    this.fileInfo.innerHTML = '';
-                    const strong = document.createElement('strong');
-                    strong.textContent = 'Loaded: ';
-                    const fileText = document.createTextNode(`${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
-                    this.fileInfo.appendChild(strong);
-                    this.fileInfo.appendChild(fileText);
-                    this.fileInfo.classList.add('active');
-                };
-                
-                reader.onerror = () => {
-                    alert('Error reading file. Please try again.');
-                };
-                
-                reader.readAsText(file);
-            }
-
-            async convertPattern() {
-                const patternText = this.patternInput.value;
-                
-                if (!patternText || patternText.trim().length === 0) {
-                    alert('Please upload a file or paste pattern text first.');
-                    return;
-                }
-
-                // Show loading
-                this.loading.classList.add('active');
-                this.convertBtn.disabled = true;
-                this.outputSection.classList.remove('active');
-
-                // Simulate processing time for better UX
-                await new Promise(resolve => setTimeout(resolve, 800));
-
-                try {
-                    this.currentPattern = this.converter.convert(patternText);
-                    this.preview.textContent = this.currentPattern;
-                    this.outputSection.classList.add('active');
-                    
-                    // Scroll to output
-                    this.outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } catch (error) {
-                    alert('Error converting pattern: ' + error.message);
-                } finally {
-                    this.loading.classList.remove('active');
-                    this.convertBtn.disabled = false;
-                }
-            }
-
-            downloadPattern() {
-                if (!this.currentPattern) {
-                    alert('No pattern to download. Please convert a pattern first.');
-                    return;
-                }
-
-                const blob = new Blob([this.currentPattern], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = this.converter.generateFileName();
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        }
-
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            new UIController();
-        });
-    </script>
+    <!-- Scripts (order matters - dependencies first) -->
+    <script src="js/abbreviations.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/ollama.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
