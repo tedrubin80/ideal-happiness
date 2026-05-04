@@ -1,14 +1,14 @@
-# 🧶 Legendary Broccoli - Knitting Pattern Converter
+# Woolery — Knitting Pattern Converter
 
-A web-based application that converts text-based knitting patterns (such as those sold on Etsy) into standardized, professional knitting patterns with proper abbreviations and formatting.
+A web tool that shortens or spells out knitting patterns. Paste a pattern (or upload a `.txt` or `.pdf`) and toggle between full-word and abbreviated form.
 
 ## Features
 
-- **File Upload**: Drag and drop or browse to upload text-based pattern files
-- **Text Input**: Paste patterns directly into the text area
-- **Smart Conversion**: Automatically standardizes common knitting terms and abbreviations
-- **Download**: Save converted patterns as formatted text files
-- **Beautiful UI**: Modern, responsive design with an intuitive interface
+- **Paste, type, or upload** a pattern (`.txt` up to 1 MB, `.pdf` up to 10 MB / 4 pages)
+- **Two-way conversion**: shorten full words to standard abbreviations (`knit` → `k`), or spell abbreviations back out
+- **Custom abbreviations**: define your own mappings, stored in your browser
+- **History**: last 10 conversions are kept locally
+- **Save / copy / print** the result
 
 ## How to Use
 
@@ -71,12 +71,17 @@ Works in all modern browsers:
 - Safari
 - Opera
 
-## Technical Details
+## Privacy
 
-- Pure HTML/CSS/JavaScript - no dependencies required
-- Client-side processing - all conversions happen in your browser
-- No data is sent to any server
-- Lightweight and fast
+- **Text-only conversions stay in your browser.** When you paste or type a pattern and use Shorten / Spell it out, no data leaves your device.
+- **PDF reading uses our server.** When you upload a PDF, the file is sent to our backend, which uses an AI model (via OpenRouter) to read the pattern. We do not store the file or the extracted text after the response is returned.
+- **History and custom abbreviations are stored in your browser only** (localStorage), never on our server.
+
+## Architecture
+
+- **Frontend**: static HTML/CSS/JS served by nginx. No build step.
+- **Backend** (PDF reading only): small Node service at `/api/extract-pdf` that renders PDF pages and forwards them to OpenRouter (default model `google/gemma-3-4b-it`). Source lives outside this repo (`/opt/woolery-api`).
+- **Secrets**: API keys live in `/etc/woolery/woolery.env` and are never committed.
 
 ## License
 

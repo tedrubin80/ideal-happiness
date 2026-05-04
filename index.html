@@ -135,7 +135,7 @@
                 "name": "Can I convert PDF knitting patterns?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes! The converter supports PDF pattern extraction using AI-powered vision models through Ollama. This feature can read designer PDFs and scanned patterns."
+                    "text": "Yes! Upload a PDF and we'll read it for you using AI to extract the pattern text — no software to install. Works with designer PDFs and scanned patterns up to 4 pages."
                 }
             },
             {
@@ -153,10 +153,6 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/print.css" media="print">
-
-    <!-- PDF.js for PDF processing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";</script>
 </head>
 <body>
     <!-- Skip link for accessibility -->
@@ -165,36 +161,28 @@
     <div class="container">
         <header>
             <h1>Knitting Pattern Converter</h1>
-            <p>Convert text-based patterns to standardized knitting patterns</p>
+            <p>Shorten or spell out your knitting patterns in seconds — free, no sign-up.</p>
         </header>
 
         <main id="main-content" class="content">
             <!-- Info box -->
             <div class="info-box" role="region" aria-label="Instructions">
-                <h3>How it works:</h3>
-                <p>Upload or paste your text-based knitting pattern, and we'll convert it to a clean, standardized format with proper abbreviations. Use <strong>Abbreviate</strong> to shorten full words, or <strong>Expand</strong> to convert abbreviations back to full words.</p>
+                <h3>How it works</h3>
+                <p>Paste, type, or upload your pattern. Tap <strong>Shorten</strong> to turn long words into standard abbreviations (knit → k, purl → p), or <strong>Spell it out</strong> to do the opposite when a pattern feels too cryptic.</p>
                 <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    <strong>Keyboard shortcuts:</strong> Ctrl+Enter to abbreviate, Ctrl+S to download
+                    <strong>Got a PDF?</strong> Drop it in — we'll read the pattern for you.
                 </p>
-                <p style="margin-top: 5px; font-size: 0.9em; color: #666;">
-                    <strong>PDF Support:</strong> Upload PDF patterns for AI-powered text extraction (requires local Ollama)
+                <p style="margin-top: 5px; font-size: 0.85em; color: #888;">
+                    Keyboard: Ctrl+Enter to shorten, Ctrl+S to download.
                 </p>
-            </div>
-
-            <!-- Ollama Status Banner -->
-            <div id="ollamaStatus" class="ollama-status" style="display: none;">
-                <span id="ollamaStatusIcon"></span>
-                <span id="ollamaStatusText"></span>
-                <button id="ollamaSettingsToggle" class="btn btn-small btn-outline" style="margin-left: auto;">Settings</button>
             </div>
 
             <!-- Upload section -->
             <section class="upload-section" id="uploadSection" role="region" aria-label="File upload">
-                <h2>Upload Pattern File</h2>
-                <p>Drag and drop a file here or click to browse</p>
-                <p style="font-size: 0.85em; color: #666;">Supports: .txt, .text, .pdf (PDF requires Ollama)</p>
+                <h2>Drop your pattern here</h2>
+                <p>Or click to browse — works with .txt and .pdf</p>
                 <div class="file-input-wrapper">
-                    <button class="btn" type="button" aria-controls="fileInput">Choose File</button>
+                    <button class="btn" type="button" aria-controls="fileInput">Choose a file</button>
                     <input type="file" id="fileInput" accept=".txt,.text,.pdf" aria-label="Upload pattern file">
                 </div>
                 <div class="file-info" id="fileInfo" aria-live="polite"></div>
@@ -202,7 +190,7 @@
 
             <!-- Text input -->
             <section aria-label="Pattern input">
-                <h2 class="section-title">Or Paste Your Pattern</h2>
+                <h2 class="section-title">Or paste it in</h2>
                 <textarea id="patternInput"
                           aria-label="Pattern text input"
                           placeholder="Paste your pattern text here...
@@ -218,31 +206,31 @@ Bind off all stitches"></textarea>
             <!-- Action buttons -->
             <div class="button-group" role="group" aria-label="Conversion actions">
                 <button class="btn" id="convertBtn" aria-describedby="convert-help">
-                    Abbreviate Pattern
+                    Shorten my pattern
                 </button>
                 <button class="btn btn-outline" id="expandBtn" aria-describedby="expand-help">
-                    Expand to Full Words
+                    Spell it out
                 </button>
             </div>
-            <span id="convert-help" class="sr-only">Converts full words to abbreviations (e.g., knit to k)</span>
-            <span id="expand-help" class="sr-only">Expands abbreviations to full words (e.g., k to knit)</span>
+            <span id="convert-help" class="sr-only">Turns full words into standard knitting abbreviations (knit becomes k)</span>
+            <span id="expand-help" class="sr-only">Turns abbreviations into full words (k becomes knit)</span>
 
             <!-- Loading indicator -->
             <div class="loading" id="loading" role="status" aria-label="Converting pattern">
                 <div class="spinner" aria-hidden="true"></div>
-                <p id="loadingText">Converting pattern...</p>
+                <p id="loadingText">Working on it…</p>
             </div>
 
             <!-- Output section -->
             <section class="output-section" id="outputSection" aria-label="Converted pattern">
-                <h2 class="section-title">Converted Pattern</h2>
+                <h2 class="section-title">Your pattern, ready to go</h2>
                 <div class="preview" id="preview" tabindex="0" role="region" aria-label="Pattern output"></div>
                 <div class="button-group" role="group" aria-label="Output actions">
                     <button class="btn btn-secondary" id="downloadBtn" aria-label="Download converted pattern">
-                        Download
+                        Save as file
                     </button>
                     <button class="btn btn-secondary" id="copyBtn" aria-label="Copy pattern to clipboard">
-                        Copy to Clipboard
+                        Copy
                     </button>
                     <button class="btn btn-secondary" id="printBtn" aria-label="Print pattern">
                         Print
@@ -250,48 +238,10 @@ Bind off all stitches"></textarea>
                 </div>
             </section>
 
-            <!-- Ollama Settings Panel -->
-            <aside id="ollamaPanel" class="panel collapsed" aria-label="Ollama AI settings">
-                <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="ollamaContent">
-                    <h2>AI Pattern Extraction (Ollama)</h2>
-                    <span class="toggle-icon" aria-hidden="true">&#9660;</span>
-                </div>
-                <div class="panel-content" id="ollamaContent">
-                    <div class="ollama-settings">
-                        <div class="form-group">
-                            <label for="ollamaUrl">Ollama URL:</label>
-                            <input type="text" id="ollamaUrl" value="http://localhost:11434" placeholder="http://localhost:11434">
-                        </div>
-                        <div class="form-group">
-                            <label for="ollamaModel">Vision Model:</label>
-                            <select id="ollamaModel">
-                                <option value="llava:7b">llava:7b (recommended)</option>
-                                <option value="llava">llava</option>
-                                <option value="llava:13b">llava:13b</option>
-                                <option value="bakllava">bakllava</option>
-                                <option value="moondream">moondream</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-small" id="testOllamaBtn">Test Connection</button>
-                            <span id="ollamaTestResult" style="margin-left: 10px;"></span>
-                        </div>
-                        <div class="ollama-info">
-                            <h4>Setup Instructions:</h4>
-                            <ol>
-                                <li>Install Ollama: <code>curl -fsSL https://ollama.com/install.sh | sh</code></li>
-                                <li>Pull a vision model: <code>ollama pull llava:7b</code></li>
-                                <li>Start Ollama: <code>ollama serve</code></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
             <!-- Custom Abbreviations Panel -->
             <aside id="customAbbrevPanel" class="panel" aria-label="Custom abbreviations">
                 <div class="panel-header" role="button" tabindex="0" aria-expanded="true" aria-controls="customAbbrevContent">
-                    <h2>Custom Abbreviations</h2>
+                    <h2>My abbreviations</h2>
                     <span class="toggle-icon" aria-hidden="true">&#9660;</span>
                 </div>
                 <div class="panel-content" id="customAbbrevContent">
@@ -310,7 +260,7 @@ Bind off all stitches"></textarea>
             <!-- History Panel -->
             <aside id="historyPanel" class="panel collapsed" aria-label="Conversion history">
                 <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="historyContent">
-                    <h2>Recent Conversions</h2>
+                    <h2>Recent patterns</h2>
                     <span class="toggle-icon" aria-hidden="true">&#9660;</span>
                 </div>
                 <div class="panel-content" id="historyContent">
@@ -331,7 +281,6 @@ Bind off all stitches"></textarea>
     <script src="js/abbreviations.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/converter.js"></script>
-    <script src="js/ollama.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 </body>

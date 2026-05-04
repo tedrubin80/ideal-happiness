@@ -10,7 +10,6 @@ class UIController {
         this.currentPattern = null;
         this.currentMode = 'abbreviate';
         this.elements = {};
-        this.ollama = null;
 
         this.initializeElements();
         this.createToastContainer();
@@ -19,7 +18,6 @@ class UIController {
         this.loadCustomAbbreviations();
         this.renderHistory();
         this.renderCustomAbbreviations();
-        this.initializeOllama();
     }
 
     /**
@@ -58,83 +56,8 @@ class UIController {
             customFullInput: document.getElementById('customFull'),
             customAbbrevInput: document.getElementById('customAbbrev'),
             customAbbrevList: document.getElementById('customAbbrevList'),
-            clearCustomBtn: document.getElementById('clearCustomBtn'),
-
-            // Ollama
-            ollamaStatus: document.getElementById('ollamaStatus'),
-            ollamaStatusIcon: document.getElementById('ollamaStatusIcon'),
-            ollamaStatusText: document.getElementById('ollamaStatusText'),
-            ollamaSettingsToggle: document.getElementById('ollamaSettingsToggle'),
-            ollamaPanel: document.getElementById('ollamaPanel'),
-            ollamaUrl: document.getElementById('ollamaUrl'),
-            ollamaModel: document.getElementById('ollamaModel'),
-            testOllamaBtn: document.getElementById('testOllamaBtn'),
-            ollamaTestResult: document.getElementById('ollamaTestResult')
+            clearCustomBtn: document.getElementById('clearCustomBtn')
         };
-    }
-
-    /**
-     * Initialize Ollama integration
-     */
-    async initializeOllama() {
-        if (typeof OllamaPatternExtractor === 'undefined') {
-            console.log('Ollama module not loaded');
-            return;
-        }
-
-        // Load saved settings
-        const savedUrl = localStorage.getItem('ollamaUrl') || 'http://localhost:11434';
-        const savedModel = localStorage.getItem('ollamaModel') || 'llama3.2-vision';
-
-        if (this.elements.ollamaUrl) {
-            this.elements.ollamaUrl.value = savedUrl;
-        }
-        if (this.elements.ollamaModel) {
-            this.elements.ollamaModel.value = savedModel;
-        }
-
-        this.ollama = new OllamaPatternExtractor({
-            baseUrl: savedUrl,
-            model: savedModel
-        });
-
-        // Check availability
-        await this.checkOllamaStatus();
-    }
-
-    /**
-     * Check and display Ollama status
-     */
-    async checkOllamaStatus() {
-        if (!this.ollama || !this.elements.ollamaStatus) return;
-
-        const status = await this.ollama.checkAvailability();
-
-        this.elements.ollamaStatus.style.display = 'flex';
-
-        if (status.available) {
-            if (status.hasVisionModel) {
-                this.elements.ollamaStatusIcon.textContent = '✓';
-                this.elements.ollamaStatusIcon.style.color = '#28a745';
-                this.elements.ollamaStatusText.textContent = `Ollama ready (${status.visionModels.length} vision model${status.visionModels.length > 1 ? 's' : ''})`;
-            } else {
-                this.elements.ollamaStatusIcon.textContent = '⚠';
-                this.elements.ollamaStatusIcon.style.color = '#ffc107';
-                this.elements.ollamaStatusText.textContent = 'Ollama connected - no vision model found';
-            }
-
-            // Update model dropdown with available models
-            if (status.visionModels.length > 0 && this.elements.ollamaModel) {
-                const currentValue = this.elements.ollamaModel.value;
-                this.elements.ollamaModel.innerHTML = status.visionModels.map(m =>
-                    `<option value="${m}" ${m === currentValue ? 'selected' : ''}>${m}</option>`
-                ).join('');
-            }
-        } else {
-            this.elements.ollamaStatusIcon.textContent = '✗';
-            this.elements.ollamaStatusIcon.style.color = '#dc3545';
-            this.elements.ollamaStatusText.textContent = `Ollama not available: ${status.error}`;
-        }
     }
 
     /**
@@ -199,18 +122,23 @@ class UIController {
 
         // History panel
         this.elements.clearHistoryBtn?.addEventListener('click', () => this.clearHistory());
+        this.elements.historyList?.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const id = Number(btn.dataset.id);
+            if (!Number.isFinite(id)) return;
+            if (btn.dataset.action === 'load-history') this.loadHistoryEntry(id);
+            else if (btn.dataset.action === 'delete-history') this.deleteHistoryEntry(id);
+        });
 
         // Custom abbreviations
         this.elements.customAbbrevForm?.addEventListener('submit', (e) => this.handleAddCustomAbbrev(e));
         this.elements.clearCustomBtn?.addEventListener('click', () => this.clearCustomAbbreviations());
-
-        // Ollama settings
-        this.elements.ollamaSettingsToggle?.addEventListener('click', () => {
-            this.togglePanel(this.elements.ollamaPanel);
+        this.elements.customAbbrevList?.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action="delete-abbrev"]');
+            if (!btn) return;
+            this.deleteCustomAbbrev(btn.dataset.full);
         });
-        this.elements.testOllamaBtn?.addEventListener('click', () => this.testOllamaConnection());
-        this.elements.ollamaUrl?.addEventListener('change', () => this.saveOllamaSettings());
-        this.elements.ollamaModel?.addEventListener('change', () => this.saveOllamaSettings());
 
         // Panel toggles
         document.querySelectorAll('.panel-header').forEach(header => {
@@ -225,55 +153,6 @@ class UIController {
 
         // Keyboard shortcuts
         this.setupKeyboardShortcuts();
-    }
-
-    /**
-     * Save Ollama settings
-     */
-    saveOllamaSettings() {
-        const url = this.elements.ollamaUrl?.value || 'http://localhost:11434';
-        const model = this.elements.ollamaModel?.value || 'llama3.2-vision';
-
-        localStorage.setItem('ollamaUrl', url);
-        localStorage.setItem('ollamaModel', model);
-
-        if (this.ollama) {
-            this.ollama.setBaseUrl(url);
-            this.ollama.setModel(model);
-        }
-    }
-
-    /**
-     * Test Ollama connection
-     */
-    async testOllamaConnection() {
-        if (!this.ollama) return;
-
-        this.saveOllamaSettings();
-
-        const resultEl = this.elements.ollamaTestResult;
-        if (resultEl) {
-            resultEl.textContent = 'Testing...';
-            resultEl.style.color = '#666';
-        }
-
-        const status = await this.ollama.checkAvailability();
-
-        if (status.available) {
-            if (resultEl) {
-                resultEl.textContent = status.hasVisionModel
-                    ? `Connected! Found: ${status.visionModels.join(', ')}`
-                    : 'Connected but no vision models found. Run: ollama pull llama3.2-vision';
-                resultEl.style.color = status.hasVisionModel ? '#28a745' : '#ffc107';
-            }
-        } else {
-            if (resultEl) {
-                resultEl.textContent = `Failed: ${status.error}`;
-                resultEl.style.color = '#dc3545';
-            }
-        }
-
-        await this.checkOllamaStatus();
     }
 
     /**
@@ -381,63 +260,46 @@ class UIController {
     }
 
     /**
-     * Handle PDF file using Ollama vision
+     * Handle PDF file by uploading to /api/extract-pdf
      * @param {File} file - PDF file
      */
     async handlePDFFile(file) {
-        if (!this.ollama) {
-            this.showToast('Ollama not initialized. Cannot process PDF.', 'error');
-            return;
-        }
-
-        // Check Ollama availability
-        const status = await this.ollama.checkAvailability();
-        if (!status.available) {
-            this.showToast(`Ollama not available: ${status.error}`, 'error');
-            this.togglePanel(this.elements.ollamaPanel);
-            return;
-        }
-
-        if (!status.hasVisionModel) {
-            this.showToast('No vision model found. Run: ollama pull llama3.2-vision', 'error');
-            this.togglePanel(this.elements.ollamaPanel);
-            return;
-        }
-
-        // Validate file size (max 10MB for PDFs)
         if (file.size > 10 * 1024 * 1024) {
             this.showToast('PDF too large. Maximum size is 10MB.', 'error');
             return;
         }
 
-        // Show file info
         if (this.elements.fileInfo) {
-            this.elements.fileInfo.innerHTML = `<strong>File:</strong> ${this.escapeHtml(file.name)} (${this.formatFileSize(file.size)}) - Processing with AI...`;
+            this.elements.fileInfo.innerHTML = `<strong>File:</strong> ${this.escapeHtml(file.name)} (${this.formatFileSize(file.size)}) - Reading...`;
             this.elements.fileInfo.classList.add('active');
         }
 
-        this.showLoading(true, 'Extracting pattern from PDF...');
+        this.showLoading(true, 'Reading your PDF pattern...');
 
         try {
-            const extractedText = await this.ollama.extractFromPDF(file, (page, total, status) => {
-                this.updateLoadingText(status);
-            });
+            const formData = new FormData();
+            formData.append('pdf', file);
 
-            this.elements.patternInput.value = extractedText;
+            const res = await fetch('/api/extract-pdf', { method: 'POST', body: formData });
+            const data = await res.json().catch(() => ({}));
 
-            if (this.elements.fileInfo) {
-                this.elements.fileInfo.innerHTML = `<strong>File:</strong> ${this.escapeHtml(file.name)} (${this.formatFileSize(file.size)}) - Extracted with AI`;
+            if (!res.ok) {
+                throw new Error(data.error || `Server returned ${res.status}`);
             }
 
-            this.announce(`PDF ${file.name} extracted successfully`);
-            this.showToast('PDF pattern extracted successfully!', 'success');
-
-        } catch (error) {
-            console.error('PDF extraction error:', error);
-            this.showToast(`PDF extraction failed: ${error.message}`, 'error');
+            this.elements.patternInput.value = data.text || '';
 
             if (this.elements.fileInfo) {
-                this.elements.fileInfo.innerHTML = `<strong>Error:</strong> Could not extract PDF`;
+                this.elements.fileInfo.innerHTML = `<strong>File:</strong> ${this.escapeHtml(file.name)} (${this.formatFileSize(file.size)}) - Read ${data.pages || ''} page${data.pages === 1 ? '' : 's'}`;
+            }
+
+            this.announce(`PDF ${file.name} read successfully`);
+            this.showToast('PDF read successfully!', 'success');
+        } catch (error) {
+            console.error('PDF extraction error:', error);
+            this.showToast(`Couldn't read PDF: ${error.message}`, 'error');
+            if (this.elements.fileInfo) {
+                this.elements.fileInfo.innerHTML = `<strong>Error:</strong> Could not read PDF`;
             }
         } finally {
             this.showLoading(false);
@@ -627,20 +489,20 @@ class UIController {
         }
 
         list.innerHTML = history.map(entry => `
-            <div class="history-item" data-id="${entry.id}">
+            <div class="history-item" data-id="${Number(entry.id)}">
                 <div class="history-item-content">
                     <div class="history-item-date">
-                        ${new Date(entry.timestamp).toLocaleString()}
+                        ${this.escapeHtml(new Date(entry.timestamp).toLocaleString())}
                         (${entry.mode === 'abbreviate' ? 'Abbreviated' : 'Expanded'})
                     </div>
                     <div class="history-item-preview">${this.escapeHtml(entry.originalPreview)}</div>
                 </div>
                 <div class="history-item-actions">
-                    <button class="btn btn-small btn-outline" onclick="ui.loadHistoryEntry(${entry.id})"
+                    <button class="btn btn-small btn-outline" data-action="load-history" data-id="${Number(entry.id)}"
                             aria-label="Load this conversion">
                         Load
                     </button>
-                    <button class="btn btn-small btn-danger" onclick="ui.deleteHistoryEntry(${entry.id})"
+                    <button class="btn btn-small btn-danger" data-action="delete-history" data-id="${Number(entry.id)}"
                             aria-label="Delete this entry">
                         ×
                     </button>
@@ -719,8 +581,8 @@ class UIController {
         list.innerHTML = '<div class="abbrev-list">' + entries.map(([full, abbrev]) => `
             <span class="abbrev-tag">
                 <span class="abbrev-tag-text">${this.escapeHtml(full)} → ${this.escapeHtml(abbrev)}</span>
-                <button class="abbrev-tag-delete" onclick="ui.deleteCustomAbbrev('${this.escapeHtml(full)}')"
-                        aria-label="Delete ${this.escapeHtml(full)} abbreviation">
+                <button class="abbrev-tag-delete" data-action="delete-abbrev" data-full="${this.escapeAttr(full)}"
+                        aria-label="Delete ${this.escapeAttr(full)} abbreviation">
                     ×
                 </button>
             </span>
@@ -749,6 +611,15 @@ class UIController {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    escapeAttr(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
     formatFileSize(bytes) {

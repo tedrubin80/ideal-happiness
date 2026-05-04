@@ -43,12 +43,11 @@ class KnittingPatternConverter {
         const convertedLines = [];
 
         // Add header
-        convertedLines.push('='.repeat(60));
         const headerText = this.mode === 'abbreviate'
-            ? 'STANDARDIZED KNITTING PATTERN (Abbreviated)'
-            : 'EXPANDED KNITTING PATTERN (Full Words)';
+            ? 'Your pattern (shortened)'
+            : 'Your pattern (spelled out)';
         convertedLines.push(headerText);
-        convertedLines.push('='.repeat(60));
+        convertedLines.push('-'.repeat(headerText.length));
         convertedLines.push('');
 
         for (const line of lines) {
@@ -71,9 +70,8 @@ class KnittingPatternConverter {
         // Add abbreviation legend (only for abbreviate mode)
         if (this.mode === 'abbreviate' && this.usedAbbreviations.size > 0) {
             convertedLines.push('');
-            convertedLines.push('='.repeat(60));
-            convertedLines.push('ABBREVIATIONS USED:');
-            convertedLines.push('-'.repeat(60));
+            convertedLines.push('Abbreviations used');
+            convertedLines.push('------------------');
 
             // Sort alphabetically by abbreviation for readability
             const sortedAbbrevs = Array.from(this.usedAbbreviations.entries())
@@ -84,9 +82,8 @@ class KnittingPatternConverter {
             }
         }
 
-        convertedLines.push('='.repeat(60));
-        convertedLines.push(`Converted on: ${new Date().toLocaleDateString()}`);
-        convertedLines.push('='.repeat(60));
+        convertedLines.push('');
+        convertedLines.push(`Converted on ${new Date().toLocaleDateString()} • wooleryapp.com`);
 
         return convertedLines.join('\n');
     }
