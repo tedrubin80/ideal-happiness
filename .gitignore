@@ -18,3 +18,8 @@ Thumbs.db
 
 # Claude Code
 .claude/
+
+# Secrets / credentials
+*.csv
+server/.env
+server/node_modules/
