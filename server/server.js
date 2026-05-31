@@ -218,6 +218,73 @@ app.post('/api/share', async (req, res) => {
 
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 
+const http = require('http');
+const OLLAMA_PORT = 11434;
+const ALLOWED_MODELS = ['llama3.2', 'mistral'];
+
+const aiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, standardHeaders: true, legacyHeaders: false });
+
+// POST /api/ai-explain — streams Ollama response about a knitting pattern
+app.post('/api/ai-explain', aiLimiter, (req, res) => {
+    const { pattern, question, model } = req.body;
+
+    if (!pattern || typeof pattern !== 'string') return res.status(400).json({ error: 'No pattern provided.' });
+    if (pattern.length > 8000) return res.status(400).json({ error: 'Pattern too large.' });
+    if (!question || typeof question !== 'string' || question.length > 500) return res.status(400).json({ error: 'Invalid question.' });
+
+    const chosenModel = ALLOWED_MODELS.includes(model) ? model : 'llama3.2';
+
+    const systemPrompt = `You are a knitting expert helping someone understand their knitting pattern. Be warm, clear, and concise. Explain stitches and techniques in plain English. Keep responses short — 2–4 sentences unless more detail is needed.`;
+
+    const userMessage = `Here is the knitting pattern:\n\n${pattern.slice(0, 4000)}\n\nQuestion: ${question}`;
+
+    const body = JSON.stringify({
+        model: chosenModel,
+        messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userMessage },
+        ],
+        stream: true,
+    });
+
+    const options = {
+        hostname: '127.0.0.1',
+        port: OLLAMA_PORT,
+        path: '/api/chat',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    };
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const ollamaReq = http.request(options, (ollamaRes) => {
+        ollamaRes.on('data', (chunk) => {
+            try {
+                const lines = chunk.toString().split('\n').filter(Boolean);
+                for (const line of lines) {
+                    const json = JSON.parse(line);
+                    const token = json?.message?.content || '';
+                    if (token) res.write(`data: ${JSON.stringify({ token })}\n\n`);
+                    if (json.done) res.write('data: [DONE]\n\n');
+                }
+            } catch (_) {}
+        });
+        ollamaRes.on('end', () => res.end());
+    });
+
+    ollamaReq.on('error', (err) => {
+        console.error('Ollama error:', err);
+        res.write('data: [ERROR]\n\n');
+        res.end();
+    });
+
+    req.on('close', () => ollamaReq.destroy());
+    ollamaReq.write(body);
+    ollamaReq.end();
+});
+
 app.listen(PORT, '127.0.0.1', () => {
     console.log(`Woolery mailer running on port ${PORT}`);
 });

@@ -246,6 +246,28 @@ BO all sts loosely"></textarea>
                 </div>
             </section>
 
+            <!-- AI Explain Panel -->
+            <section class="ai-panel" id="aiPanel" aria-label="Ask AI about your pattern" hidden>
+                <div class="ai-panel-header">
+                    <div class="ai-panel-title">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 7.2C6.5 5.98 7.57 5 9 5s2.5.98 2.5 2.2c0 1.1-.78 2-1.83 2.18L9.5 10h-1l-.17-1.5C7.2 8.28 6.5 7.8 6.5 7.2zM8.5 12.5a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0z" fill="currentColor"/></svg>
+                        <span>Still confused? Ask AI.</span>
+                    </div>
+                    <div class="ai-model-toggle" role="group" aria-label="Choose AI model">
+                        <button class="ai-model-btn active" data-model="llama3.2" type="button">Fast</button>
+                        <button class="ai-model-btn" data-model="mistral" type="button">Detailed</button>
+                    </div>
+                </div>
+                <form class="ai-form" id="aiForm">
+                    <input type="text" id="aiQuestion"
+                           placeholder="e.g. What does Row 3 actually do? or What is a ssk?"
+                           maxlength="500"
+                           aria-label="Ask a question about your pattern">
+                    <button type="submit" class="btn btn-small" id="aiSubmit">Ask</button>
+                </form>
+                <div class="ai-response" id="aiResponse" aria-live="polite" hidden></div>
+            </section>
+
             <!-- Custom Abbreviations Panel -->
             <aside id="customAbbrevPanel" class="panel" aria-label="Custom abbreviations">
                 <div class="panel-header" role="button" tabindex="0" aria-expanded="true" aria-controls="customAbbrevContent">
@@ -503,6 +525,88 @@ BO all sts loosely"></textarea>
                 .catch(function() {
                     setSubmitting(sfSubmit, false);
                     showToast('Could not connect. Please try again.', 'error');
+                });
+            });
+        }
+
+        // ── AI Explain ────────────────────────────────
+
+        var aiPanel = document.getElementById('aiPanel');
+        var aiForm = document.getElementById('aiForm');
+        var aiQuestion = document.getElementById('aiQuestion');
+        var aiResponse = document.getElementById('aiResponse');
+        var aiSubmit = document.getElementById('aiSubmit');
+        var aiModel = 'llama3.2';
+
+        document.querySelectorAll('.ai-model-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.ai-model-btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                aiModel = btn.dataset.model;
+            });
+        });
+
+        var outputSection = document.getElementById('outputSection');
+        if (outputSection) {
+            var observer = new MutationObserver(function() {
+                if (outputSection.classList.contains('active') && aiPanel) {
+                    aiPanel.hidden = false;
+                }
+            });
+            observer.observe(outputSection, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        if (aiForm) {
+            aiForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var question = aiQuestion.value.trim();
+                var preview = document.getElementById('preview');
+                var pattern = preview ? preview.textContent.trim() : '';
+
+                if (!question || !pattern) return;
+
+                aiSubmit.disabled = true;
+                aiSubmit.textContent = 'Thinking…';
+                aiResponse.hidden = false;
+                aiResponse.textContent = '';
+
+                fetch('/api/ai-explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pattern: pattern, question: question, model: aiModel })
+                }).then(function(res) {
+                    if (!res.ok) throw new Error('Server error');
+                    var reader = res.body.getReader();
+                    var decoder = new TextDecoder();
+                    var buf = '';
+
+                    function read() {
+                        reader.read().then(function(result) {
+                            if (result.done) {
+                                aiSubmit.disabled = false;
+                                aiSubmit.textContent = 'Ask';
+                                return;
+                            }
+                            buf += decoder.decode(result.value, { stream: true });
+                            var lines = buf.split('\n');
+                            buf = lines.pop();
+                            lines.forEach(function(line) {
+                                if (!line.startsWith('data: ')) return;
+                                var payload = line.slice(6);
+                                if (payload === '[DONE]' || payload === '[ERROR]') return;
+                                try {
+                                    var data = JSON.parse(payload);
+                                    if (data.token) aiResponse.textContent += data.token;
+                                } catch (_) {}
+                            });
+                            read();
+                        });
+                    }
+                    read();
+                }).catch(function() {
+                    aiResponse.textContent = 'Could not reach the AI. Please try again.';
+                    aiSubmit.disabled = false;
+                    aiSubmit.textContent = 'Ask';
                 });
             });
         }
